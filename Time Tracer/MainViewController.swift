@@ -1,5 +1,5 @@
 //
-//  FirstViewController.swift
+//  MainViewController.swift
 //  Time Tracer
 //
 //  Created by Celal Aslan on 2018-06-15.
@@ -42,7 +42,6 @@ class MainViewController: UIViewController {
     }()
     
     
-    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var startPauseButton: UIButton!
     @IBOutlet weak var stopButton: UIButton!
     @IBOutlet weak var currentDateField: UITextField!
@@ -57,12 +56,28 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-//        currentDateField.becomeFirstResponder()
+        currentDateField.becomeFirstResponder()
         currentDateField.delegate = self
         title = "Time Tracer"
-        activityLabel.text = "Select an activity from list"
+        activityLabel.text = "Select an Activity to Start"
+        addBackground()
+        
+
         
     }
+    
+    func addBackground() {
+        let width = UIScreen.main.bounds.size.width
+        let height = UIScreen.main.bounds.size.height
+        
+        let imageViewBackground = UIImageView(frame: CGRect(x:0, y:0, width: width, height: height))
+        imageViewBackground.image = UIImage(named: "bg.png")
+        imageViewBackground.contentMode = UIViewContentMode.scaleAspectFill
+        
+        self.view.addSubview(imageViewBackground)
+        self.view.sendSubview(toBack: imageViewBackground)
+    }
+    
     
     /**
      Called when the view appeared. Load the core data entities for today
@@ -126,11 +141,10 @@ class MainViewController: UIViewController {
         secondsLabel.text = "00"
         minutesLabel.text = "00"
         hoursLabel.text = "00"
-        activityLabel.text = "Select an activity from list"
+        activityLabel.text = "Select an Activity to Start"
         startPauseButton.setTitle("Start activity", for: [])
         if passedSeconds != 0 {
             saveActivityToLog()
-            tableView.reloadData()
         }
     }
     
@@ -138,7 +152,6 @@ class MainViewController: UIViewController {
      Start the new activity. start timer and set properties.
      */
     func startActivity() {
-//        startDate = NSDate()
         passedSeconds = 0
         invalidateTimer()
         startActivityTimer()
@@ -229,7 +242,6 @@ class MainViewController: UIViewController {
         secondsLabel.text = timeStringWithTimeToDisplay(time: seconds)
         minutesLabel.text = timeStringWithTimeToDisplay(time: minutes)
         hoursLabel.text = timeStringWithTimeToDisplay(time: hours)
-        print(passedSeconds)
     }
 
     /**
@@ -240,8 +252,6 @@ class MainViewController: UIViewController {
         if todaysActivitiesArray.count != 0 {
             totalduration = calculateTotalDurationForToday()
         }
-        tableView.reloadData()
-        print("data reloaded")
     }
     
     /**
@@ -256,93 +266,6 @@ class MainViewController: UIViewController {
         }
         return sumOfDuration
     }
-    
-    
-    // MARK: tableView methods
-    /**
-     Asks the data source for a cell to insert in a particular location of the table view.
-
-     - parameter tableView: tableView
-     - parameter indexPath: indexPath
-
-     - returns: created cell
-     */
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! LogCell
-
-        let log = todaysActivitiesArray[indexPath.row]
-
-        cell.durationLabel.text = MainViewController.createDurationStringFromDuration(duration: (log.duration?.doubleValue)!)
-
-        return cell
-    }
-
-    /**
-     How many rows/cells to display
-
-     - parameter tableView: tableView
-     - parameter section:   in which section
-
-     - returns: number of rows
-     */
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return todaysActivitiesArray.count
-    }
-
-    /**
-     Height for each cell
-
-     - parameter tableView: tableView
-     - parameter indexPath: at which indexpath
-
-     - returns: height
-     */
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 72
-    }
-
-    /**
-     Height for the headerview
-
-     - parameter tableView: tableView
-     - parameter section:   at which section
-
-     - returns: height
-     */
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30
-    }
-
-    /**
-     What view to use for each section
-
-     - parameter tableView: tableView
-     - parameter section:   at which section
-
-     - returns: headerView
-     */
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let title = self.tableView(tableView, titleForHeaderInSection: section)
-//        let heightForRow = self.tableView(tableView, heightForHeaderInSection: section)
-//                let cgFloat: CGFloat = tableView.frame.size.width
-//        let headerView = HeaderView(frame: CGRect.init(x: 0.0, y: 0.0, width: (tableView.frame.size.width) , height: heightForRow), title: title! as NSString)
-//        return headerView
-//    }
-
-    /**
-     What the title should be
-
-     - parameter tableView: tableView
-     - parameter section:   at which section
-
-     - returns: title
-     */
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        return String(format: "Total spent today: \(NSString.createDurationStringFromDuration(duration: Double(totalduration)))")
-//    }
-
-
-
 }
 
 extension MainViewController: UITextFieldDelegate {
@@ -355,15 +278,3 @@ extension MainViewController: UITextFieldDelegate {
         return true
     }
 }
-
-
-//func configureTapGesture() {
-//    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap))
-//    view.addGestureRecognizer(tapGesture)
-//}
-//
-//@objc func handleTap() {
-//    print("handleTap method was called")
-//    view.endEditing(true)
-//}
-

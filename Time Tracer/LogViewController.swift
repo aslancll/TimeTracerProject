@@ -1,5 +1,5 @@
 //
-//  SecondViewController.swift
+//  LogViewController.swift
 //  Time Tracer
 //
 //  Created by Celal Aslan on 2018-06-15.
@@ -8,12 +8,11 @@
 
 import UIKit
 import CoreData
-class LogViewController: UIViewController {
 
-    /// table view to display items
-    @IBOutlet weak var tableView: UITableView!
-    /// A label to display when there are no items in the view
-    @IBOutlet weak var noItemsLabel: UILabel!
+class LogViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    
+    
+    @IBOutlet var tableView: UITableView!
     
     /// fetch controller
     lazy var fetchController: NSFetchedResultsController = { () -> NSFetchedResultsController<NSFetchRequestResult> in
@@ -29,73 +28,83 @@ class LogViewController: UIViewController {
         return fetchedController
     }()
     
-    /// date formatter
-    lazy var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm:ss"
-        return dateFormatter
-    }()
     
-    // MARK: view methods
-    /**
-     Called after the view was loaded, do some initial setup and refresh the view
-     */
-    override func viewDidLoad() {
-        title = "Week Log"
-        
-        tableView.tableFooterView = UIView(frame: CGRect.zero)
-//        tableView.separatorColor = UIColor.tableViewSeparatorColor()
-//        tableView.backgroundColor = UIColor.tableViewBackgroundColor()
-        
-        refreshView()
-        loadNormalState()
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return LogList!.count
     }
     
-    /**
-     Load the normal state of the navigation bar
-     */
-    func loadNormalState() {
-        navigationItem.leftBarButtonItem = nil
-        navigationItem.backBarButtonItem?.action = #selector(LogViewController.backButtonPressed)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(LogViewController.editButtonPressed))
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
+        
+        let log = LogList![indexPath.row]
+        cell.textLabel?.text = log.name
+        cell.detailTextLabel?.text = "Duration : " + LogViewController.createDurationStringFromDuration(duration: (log.duration?.doubleValue)!)
+        cell.backgroundColor = UIColor.white
+        return cell
     }
     
-    /**
-     Load the editing state of the navigation bar
-     */
-    func loadEditState() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Delete", style: .plain, target: self, action: #selector(LogViewController.deleteButtonPressed))
-        
-        if numberOfItemsToDelete() == 0 {
-            navigationItem.leftBarButtonItem?.isEnabled = false
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let log = LogList![indexPath.row]
+            CoreDataHandler.sharedInstance.deleteObject(object: log)
+            reloadCoreDataEntities()
+            
         }
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(LogViewController.doneButtonPressed))
     }
     
     /**
-     Refresh the view, reload the tableView and check if it's needed to show the empty view.
+     Called when user selected a cell, if in editing mode, mark the cell as selected
+     
+     - parameter tableView: tableView
+     - parameter indexPath: indexPath that was selected
      */
-    func refreshView() {
-        loadCoreDataEntities()
-//        checkToShowEmptyLabel()
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if tableView.isEditing == true {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            updateDeleteButtonTitle()
+        } else {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
     }
     
     /**
-     Checks for the available Activities, if YES show the empty view
+     Called when user deselects a cell. If editing, update the delete button's title
+     
+     - parameter tableView: tableView
+     - parameter indexPath: cell at the indexPath that was deselected
      */
-//    func checkToShowEmptyLabel() {
-//        noItemsLabel.isHidden = fetchController.fetchedObjects?.count != 0
-//        tableView.reloadData()
-//    }
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if tableView.isEditing == true {
+            updateDeleteButtonTitle()
+        }
+    }
     
     /**
-     Load history entities from core data.
+     Height for each cell
+     
+     - parameter tableView: tableView
+     - parameter indexPath: at which indexpath
+     
+     - returns: height
      */
-    func loadCoreDataEntities() {
-        do {
-            try fetchController.performFetch()
-        } catch {
-            // error occured while fetching
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 72
+    }
+    
+    
+    /**
+     Returns the number of selected items.
+     
+     - returns: number of selected rows.
+     */
+    func numberOfItemsToDelete() -> NSInteger {
+        if let selectedRows = tableView.indexPathsForSelectedRows {
+            return selectedRows.count
+        } else {
+            return 0
         }
     }
     
@@ -130,12 +139,11 @@ class LogViewController: UIViewController {
             }
             
             CoreDataHandler.sharedInstance.deleteObjects(objectsToDelete: objectsToDelete)
-//            checkToShowEmptyLabel()
             updateDeleteButtonTitle()
             
             if fetchController.fetchedObjects?.count == 0 {
                 loadNormalState()
-                                loadCoreDataEntities()
+                reloadCoreDataEntities()
             }
         }
     }
@@ -155,161 +163,18 @@ class LogViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    // MARK: tableView methods
-    /**
-     Notifies the receiver that the fetched results controller is about to start processing of one or more changes due to an add, remove, move, or update.
-     
-     - parameter controller: controller The fetched results controller that sent the message.
-     */
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
+    
+    func refreshView() {
+        tableView.reloadData()
     }
     
     /**
-     Notifies the receiver that a fetched object has been changed due to an add, remove, move, or update. The fetched results controller reports changes to its section before changes to the fetch result objects.
-     
-     - parameter controller:   The fetched results controller that sent the message.
-     - parameter anObject:     The object that was changed
-     - parameter indexPath:    at which indexPath
-     - parameter type:         what happened
-     - parameter newIndexPath: The destination path for the object for insertions or moves (this value is nil for a deletion).
+     Load activity entities from core data.
      */
-    private func controller(controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeObject anObject: Any, atIndexPath indexPath: IndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        switch (type) {
-        case NSFetchedResultsChangeType.insert:
-            tableView.insertRows(at: [indexPath! as IndexPath], with: .fade)
-            break
-        case .delete:
-            tableView.deleteRows(at: [indexPath! as IndexPath], with: .left)
-            break
-        case .update:
-            configureCell(cell: tableView.cellForRow(at: indexPath! as IndexPath) as! LogCell, indexPath: indexPath! as NSIndexPath as NSIndexPath)
-            break
-        case .move:
-            tableView.deleteRows(at: [indexPath! as IndexPath], with: .left)
-            tableView.insertRows(at: [newIndexPath! as IndexPath], with: .fade)
-            break
-        }
+    func reloadCoreDataEntities() {
+        LogList = CoreDataHandler.sharedInstance.allLogItems()
+        refreshView()
     }
-    
-    /**
-     Notifies the receiver of the addition or removal of a section. The fetched results controller reports changes to its section before changes to the fetched result objects.
-     
-     - parameter controller:   The fetched results controller that sent the message.
-     - parameter sectionInfo:  section that was changed
-     - parameter sectionIndex: the index of the section
-     - parameter type:         what happened
-     */
-    func controller(controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
-        switch(type)
-        {
-        case .insert:
-            tableView.insertSections(NSIndexSet(index: sectionIndex) as IndexSet, with: .fade)
-            break
-        case .delete:
-            tableView.deleteSections(NSIndexSet(index: sectionIndex) as IndexSet, with: .left)
-            break
-        case .update:
-            break
-        default:
-            break
-        }
-    }
-    
-    /**
-     Notifies the receiver that the fetched results controller has completed processing of one or more changes due to an add, remove, move, or update.
-     
-     - parameter controller: controller The fetched results controller that sent the message.
-     */
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
-    }
-    
-    /**
-     Returns the height value for the given indexPath
-     
-     - parameter tableView: tableView
-     - parameter indexPath: at which indexpath
-     
-     - returns: height for a row
-     */
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 72
-    }
-    
-    /**
-     Return the number of rows to display at a given section
-     
-     - parameter tableView: tableView
-     - parameter section:   at which section
-     
-     - returns: number of rows
-     */
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let sections = fetchController.sections {
-            let sectionInfo = sections[section]
-            return sectionInfo.numberOfObjects
-        } else {
-            return 0
-        }
-    }
-    
-    /**
-     Returns the number of sections to display
-     
-     - parameter tableView: tableView
-     - returns: number of sections to display
-     */
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if let sections = fetchController.sections {
-            return sections.count
-        } else {
-            return 0
-        }
-    }
-    
-    /**
-     Asks the delegate for the height to use for the header of a particular section.
-     
-     - parameter tableView: tableView
-     - parameter section:   section
-     
-     - returns: height of a header
-     */
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30
-    }
-    
-    /**
-     Title for the header in a given section
-     
-     - parameter tableView: tableView
-     - parameter section:   section
-     
-     - returns: title of the header
-     */
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if let sections = fetchController.sections {
-            return sections[section].name
-        } else {
-            return ""
-        }
-    }
-    
-    /**
-     Returns a custom header view to be displayed at a section
-     
-     - parameter tableView: tableView
-     - parameter section:   section
-     
-     - returns: headerView
-     */
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let title = self.tableView(tableView, titleForHeaderInSection: section)
-//        let heightForView = self.tableView(tableView, heightForHeaderInSection: section)
-//        let headerView = HeaderView(frame: CGRect(x: 0.0, y: 0.0, width: tableView.frame.width, height: heightForView), title: title! as NSString)
-//        return headerView
-//    }
     
     /**
      Creates a duration string from the passed in duration value. Format is 00:00:00
@@ -343,140 +208,40 @@ class LogViewController: UIViewController {
     }
     
     /**
-     Configures and returns a cell for the given indexpath
-     
-     - parameter tableView: tableView
-     - parameter indexPath: indexPath
-     
-     - returns: cell
+     Load the normal state of the navigation bar
      */
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! LogCell
+    func loadNormalState() {
+        navigationItem.leftBarButtonItem = nil
+        navigationItem.backBarButtonItem?.action = #selector(LogViewController.backButtonPressed)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(LogViewController.editButtonPressed))
+    }
+    
+    /**
+     Load the editing state of the navigation bar
+     */
+    func loadEditState() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Delete", style: .plain, target: self, action: #selector(LogViewController.deleteButtonPressed))
         
-        configureCell(cell: cell, indexPath: indexPath as NSIndexPath)
-        
-        return cell
-    }
-    
-    /**
-     Configures a cell at the given indexPath
-     
-     - parameter cell:      cell to configure
-     - parameter indexPath: indexPath
-     */
-    func configureCell(cell: LogCell, indexPath: NSIndexPath) {
-        let log = fetchController.object(at: indexPath as IndexPath) as! Logs
-        
-        cell.nameLabel.text = log.name
-//        cell.timeLabel.text = "\(dateFormatter.string(from: history.startDate! as Date)) -  \(dateFormatter.string(from: history.endDate! as Date))"
-        cell.durationLabel.text = LogViewController.createDurationStringFromDuration(duration: (log.duration?.doubleValue)!)
-        
-//        cell.backgroundColor = .cellBackgroundColor()
-    }
-    
-    /**
-     Return YES/True to allow editing of cells
-     
-     - parameter tableView: tableView
-     - parameter indexPath: at which indexPath
-     
-     - returns: true if editing allowed
-     */
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    /**
-     Called when an editing happened to the cell, in this case: delete. So delete the object from core data.
-     
-     - parameter tableView:    tableView
-     - parameter editingStyle: the editing style, in this case Delete is important
-     - parameter indexPath:    at which indexpath
-     */
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            let logToDelete = fetchController.object(at: indexPath)
-            CoreDataHandler.sharedInstance.deleteObject(object: logToDelete as! NSManagedObject)
+        if numberOfItemsToDelete() == 0 {
+            navigationItem.leftBarButtonItem?.isEnabled = false
         }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(LogViewController.doneButtonPressed))
     }
-    
-    /**
-     Called when user selected a cell, if in editing mode, mark the cell as selected
-     
-     - parameter tableView: tableView
-     - parameter indexPath: indexPath that was selected
-     */
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if tableView.isEditing == true {
-            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-            updateDeleteButtonTitle()
-        } else {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-    }
-    
-    /**
-     Called when user deselects a cell. If editing, update the delete button's title
-     
-     - parameter tableView: tableView
-     - parameter indexPath: cell at the indexPath that was deselected
-     */
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if tableView.isEditing == true {
-            updateDeleteButtonTitle()
-        }
-    }
-    
-    /**
-     Returns the number of selected items.
-     
-     - returns: number of selected rows.
-     */
-    func numberOfItemsToDelete() -> NSInteger {
-        if let selectedRows = tableView.indexPathsForSelectedRows {
-            return selectedRows.count
-        } else {
-            return 0
-        }
-    }
-    
-}
 
-    
-    
-    class LogCell: UITableViewCell {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.delegate = self
+        tableView.dataSource = self
+        title = "Task Log"
+        reloadCoreDataEntities()
+        refreshView()
+        tableView.reloadData()
         
-        
-        /// display the name of the history item
-        @IBOutlet weak var nameLabel: UILabel!
-        /// display the duration of the history item
-        @IBOutlet weak var durationLabel: UILabel!
-        
-        
-        /**
-         Customize the look of the cell
-         */
-        override func awakeFromNib() {
-            super.awakeFromNib()
-            
-            nameLabel.textColor = UIColor.green
-            durationLabel.textColor = UIColor.red
-            backgroundColor = UIColor.white
-        }
-        
-        /**
-         Toggles the receiver into and out of editing mode. When YES, hide the durationLabel with animation.
-         
-         - parameter editing:  YES to enter editing mode, NO to leave it. The default value is NO
-         - parameter animated: YES to animate the appearance or disappearance of the insertion/deletion control and the reordering control, NO to make the transition immediate.
-         */
-        override func setEditing(_ editing: Bool, animated: Bool) {
-            super.setEditing(editing, animated: animated)
-            if editing == true {
-                durationLabel.alpha = 0
-            } else {
-                durationLabel.alpha = 1
-            }
-        }
-        
+        // Do any additional setup after loading the view.
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        reloadCoreDataEntities()
+    }
+}

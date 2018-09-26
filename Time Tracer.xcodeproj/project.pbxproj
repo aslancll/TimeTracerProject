@@ -16,11 +16,10 @@
 		63E788F720DA1F9C005080A0 /* NewActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63E788F620DA1F9C005080A0 /* NewActivityViewController.swift */; };
 		63F2566A20D46B4100A0AB2B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F2566920D46B4100A0AB2B /* AppDelegate.swift */; };
 		63F2566C20D46B4100A0AB2B /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F2566B20D46B4100A0AB2B /* MainViewController.swift */; };
-		63F2566E20D46B4100A0AB2B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F2566D20D46B4100A0AB2B /* LogViewController.swift */; };
 		63F2567120D46B4100A0AB2B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63F2566F20D46B4100A0AB2B /* Main.storyboard */; };
 		63F2567320D46B4600A0AB2B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63F2567220D46B4600A0AB2B /* Assets.xcassets */; };
 		63F2567620D46B4600A0AB2B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63F2567420D46B4600A0AB2B /* LaunchScreen.storyboard */; };
-		63F2568620D47CEE00A0AB2B /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F2568520D47CEE00A0AB2B /* HelpViewController.swift */; };
+		63F2568620D47CEE00A0AB2B /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F2568520D47CEE00A0AB2B /* LogViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,12 +33,11 @@
 		63F2566620D46B4100A0AB2B /* Time Tracer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Time Tracer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F2566920D46B4100A0AB2B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		63F2566B20D46B4100A0AB2B /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		63F2566D20D46B4100A0AB2B /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 		63F2567020D46B4100A0AB2B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		63F2567220D46B4600A0AB2B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63F2567520D46B4600A0AB2B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63F2567720D46B4600A0AB2B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		63F2568520D47CEE00A0AB2B /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		63F2568520D47CEE00A0AB2B /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,8 +76,7 @@
 				63E5951220DC851900C1D3ED /* Logs.swift */,
 				63F2566B20D46B4100A0AB2B /* MainViewController.swift */,
 				63E5950520DB30AD00C1D3ED /* ActivityListViewController.swift */,
-				63F2566D20D46B4100A0AB2B /* LogViewController.swift */,
-				63F2568520D47CEE00A0AB2B /* HelpViewController.swift */,
+				63F2568520D47CEE00A0AB2B /* LogViewController.swift */,
 				63E788F620DA1F9C005080A0 /* NewActivityViewController.swift */,
 				63E5950B20DC849F00C1D3ED /* CoreDataHandler.swift */,
 				63F2566F20D46B4100A0AB2B /* Main.storyboard */,
@@ -163,13 +160,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				63E5951720DC8C0B00C1D3ED /* Activity.swift in Sources */,
-				63F2566E20D46B4100A0AB2B /* LogViewController.swift in Sources */,
 				63F2566A20D46B4100A0AB2B /* AppDelegate.swift in Sources */,
 				63E5951320DC851900C1D3ED /* Logs.swift in Sources */,
 				63E5951020DC84A000C1D3ED /* CoreDataHandler.swift in Sources */,
 				63F2566C20D46B4100A0AB2B /* MainViewController.swift in Sources */,
 				63E788F720DA1F9C005080A0 /* NewActivityViewController.swift in Sources */,
-				63F2568620D47CEE00A0AB2B /* HelpViewController.swift in Sources */,
+				63F2568620D47CEE00A0AB2B /* LogViewController.swift in Sources */,
 				63E5950620DB30AD00C1D3ED /* ActivityListViewController.swift in Sources */,
 				63E788E920D9CADC005080A0 /* DatePickerDialog.swift in Sources */,
 				63E5950E20DC84A000C1D3ED /* Model.xcdatamodeld in Sources */,
