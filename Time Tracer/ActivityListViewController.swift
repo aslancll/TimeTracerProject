@@ -129,7 +129,7 @@ class ActivityListViewController: UIViewController, UITableViewDataSource, UITab
         super.viewDidLoad()
         activityListTableView.delegate = self
         activityListTableView.dataSource = self
-        title = "Activity List"
+        title = "Task List"
         reloadCoreDataEntities()
         refreshView()
         activityListTableView.reloadData()

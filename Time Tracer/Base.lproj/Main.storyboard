@@ -242,32 +242,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cjk-b8-5GP">
-                                <rect key="frame" x="162" y="304" width="52.5" height="59"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cjk-b8-5GP">
+                                <rect key="frame" x="162" y="304" width="51" height="59"/>
+                                <color key="backgroundColor" red="0.14901960780000001" green="0.65098039220000004" blue="0.82745098039999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" name="Kefa-Regular" family="Kefa" pointSize="20"/>
                                 <color key="tintColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" backgroundImage="add">
-                                    <attributedString key="attributedTitle"/>
+                                <state key="normal" title="Add">
+                                    <color key="titleShadowColor" red="0.14901960780000001" green="0.65098039220000004" blue="0.82745098039999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
                                     <action selector="addPressed:" destination="zj7-FC-UFd" eventType="touchUpInside" id="pB6-gK-Jli"/>
                                 </connections>
                             </button>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" barStyle="blackTranslucent" largeTitles="YES" translatesAutoresizingMaskIntoConstraints="NO" id="afg-pO-krs">
-                                <rect key="frame" x="0.0" y="62" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="tintColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="barTintColor" red="0.14901960780000001" green="0.65098039220000004" blue="0.82745098039999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <textAttributes key="largeTitleTextAttributes">
-                                    <fontDescription key="fontDescription" name="Kefa-Regular" family="Kefa" pointSize="61"/>
-                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <color key="textShadowColor" red="0.14901960780000001" green="0.65098039220000004" blue="0.82745098039999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <offsetWrapper key="textShadowOffset" horizontal="10" vertical="15"/>
-                                </textAttributes>
-                                <items>
-                                    <navigationItem title="Title" id="yqF-yE-wcA"/>
-                                </items>
-                            </navigationBar>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Type here to add  a new activity" textAlignment="center" minimumFontSize="20" translatesAutoresizingMaskIntoConstraints="NO" id="Eht-Rs-8pW">
                                 <rect key="frame" x="35" y="261" width="305" height="30"/>
                                 <nil key="textColor"/>
@@ -383,13 +369,16 @@
             </objects>
             <point key="canvasLocation" x="422" y="-261"/>
         </scene>
-        <!--Time Tracer-->
+        <!--Time Tracker-->
         <scene sceneID="jsc-dj-94y">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="NVk-CC-2F1" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Time Tracer" image="clock" landscapeImage="clock" largeContentSizeImage="clock" id="acW-dT-cKf">
+                    <tabBarItem key="tabBarItem" title="Time Tracker" image="clock" landscapeImage="clock" largeContentSizeImage="clock" id="acW-dT-cKf">
                         <inset key="imageInsets" minX="0.0" minY="7" maxX="0.0" maxY="5"/>
                         <color key="badgeColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="string" keyPath="title" value="Time Tracker"/>
+                        </userDefinedRuntimeAttributes>
                     </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleAspectFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="blackTranslucent" largeTitles="YES" id="Awg-rb-iXF">
@@ -418,7 +407,7 @@
         <scene sceneID="oMI-Xi-cHY">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="46R-FB-If5" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Task Log" image="log" landscapeImage="log" largeContentSizeImage="log" springLoaded="YES" id="7RX-IQ-W88">
+                    <tabBarItem key="tabBarItem" title="Task Log" image="log" landscapeImage="log" largeContentSizeImage="log" id="7RX-IQ-W88">
                         <inset key="imageInsets" minX="0.0" minY="7" maxX="0.0" maxY="5"/>
                     </tabBarItem>
                     <toolbarItems/>

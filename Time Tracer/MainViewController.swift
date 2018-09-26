@@ -61,8 +61,7 @@ class MainViewController: UIViewController {
         title = "Time Tracer"
         activityLabel.text = "Select an Activity to Start"
         addBackground()
-        
-
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         
     }
     
@@ -90,7 +89,7 @@ class MainViewController: UIViewController {
 
     func dateTapped() {
         
-        DatePickerDialog().show("DatePicker", doneButtonTitle: "Done", cancelButtonTitle: "Cancel", datePickerMode: .date) {
+        DatePickerDialog().show("Activity Date", doneButtonTitle: "Done", cancelButtonTitle: "Cancel", datePickerMode: .date) {
             (date) -> Void in
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .medium
@@ -266,6 +265,13 @@ class MainViewController: UIViewController {
         }
         return sumOfDuration
     }
+    func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
+    }
+    func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {
+        return UIInterfaceOrientation.portrait
+    }
+
 }
 
 extension MainViewController: UITextFieldDelegate {

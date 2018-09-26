@@ -19,7 +19,7 @@ class NewActivityViewController: UIViewController {
             newActivityTextField.text = ""
         } else {
             if CoreDataHandler.sharedInstance.isDuplicate(activityName: activityName!) == true {
-                let alertView = UIAlertController(title: "Duplicate", message: "This activity is already in your activity list.", preferredStyle: .alert)
+                let alertView = UIAlertController(title: "Duplicate", message: "This task is already in your activity list.", preferredStyle: .alert)
                 alertView.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 present(alertView, animated: true, completion: nil)
             } else {
@@ -41,12 +41,20 @@ class NewActivityViewController: UIViewController {
         self.view.addSubview(imageViewBackground)
         self.view.sendSubview(toBack: imageViewBackground)
     }
+    func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
+    }
+    func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {
+        return UIInterfaceOrientation.portrait
+    }
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         newActivityTextField.becomeFirstResponder()
-        title = "New Activity"
+        title = "New Task"
         addBackground()
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         // Do any additional setup after loading the view.
     }
     
